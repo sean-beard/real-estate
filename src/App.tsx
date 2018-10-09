@@ -1,6 +1,6 @@
 import Navigation from "components/navigation";
-import FormulaPage from "components/navigation/pages/formula";
-import ProjectionPage from "components/navigation/pages/projection";
+import FormulaPage from "components/pages/formula";
+import ProjectionPage from "components/pages/projection";
 import * as React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
