@@ -28,19 +28,30 @@ const ResultsForm = styled(ProjectionResults)`
   grid-area: results;
 `;
 
-const ProjectionPage: React.SFC = () => {
-  const handlePropertyInfoSubmit = (formValues: IFormValues) => {
-    const metrics = new ProjectionData(formValues);
-    metrics.getAnalysisResults();
+interface IState {
+  metrics?: ProjectionData;
+}
+
+class ProjectionPage extends React.Component<{}, IState> {
+  public state: IState = {
+    metrics: undefined
   };
-  return (
-    <Page title="Projection Analysis">
-      <Container>
-        <InfoForm onSubmit={handlePropertyInfoSubmit} />
-        <ResultsForm />
-      </Container>
-    </Page>
-  );
-};
+
+  public handlePropertyInfoSubmit = (formValues: IFormValues) =>
+    this.setState({
+      metrics: new ProjectionData(formValues)
+    });
+
+  public render() {
+    return (
+      <Page title="Projection Analysis">
+        <Container>
+          <InfoForm onSubmit={this.handlePropertyInfoSubmit} />
+          <ResultsForm metrics={this.state.metrics} />
+        </Container>
+      </Page>
+    );
+  }
+}
 
 export default ProjectionPage;
