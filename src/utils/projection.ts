@@ -1,327 +1,797 @@
 import { Finance } from "financejs";
 import { IFormValues } from "types/form-values";
 
-export class ProjectionData {
-  public propertyValue: number;
-  public monthlyPayment: number;
-  public monthlyInterestPayment: number;
-  public monthlyPrincipalPayment: number;
-  public annualDepreciationTaxSavings: number;
-  public compoundDepreciationTaxSavings: number;
-  public equityBanked: number;
-  public initInvestment: number;
-  public vrRatio: number;
-  public annualOperatingIncome: number;
-  public compoundOperatingIncome: number;
-  public annualCashOnCashRoi: number;
-  public annualCashFlow: number;
-  public compoundCashFlow: number;
-  public totalEarned: number;
-  public totalRoi: number;
-  public annualCapRate: number;
-  private financeLib: Finance;
-  private year: number;
-  private formValues: IFormValues;
+const MONTHS_PER_YEAR: number = 12;
 
-  constructor(formVals: IFormValues) {
-    this.financeLib = new Finance();
-    this.year = 1;
-    this.formValues = formVals;
-  }
-
-  public setYear(year: number): void {
-    this.year = year;
-  }
-
-  public getAnalysisResults(): void {
-    this.calculateAnnualData();
-    this.calculateCompoundData();
-  }
-
-  private calculateAnnualData(): void {
-    this.setLoanInfo();
-    this.setAnnualDepreciationTaxSavings();
-    this.setInitInvestment();
-    this.setVrRatio();
-    this.setAnnualOperatingIncome();
-    this.setAnnualCashOnCashRoi();
-    this.setAnnualCashFlow();
-    this.setAnnualCapRate();
-  }
-
-  private calculateCompoundData(): void {
-    this.setPropertyValue();
-    this.setCompoundDepreciationTaxSavings();
-    this.setCompoundOperatingIncome();
-    this.setCompoundCashFlow();
-    this.setTotalEarned();
-    this.setTotalRoi();
-  }
-
-  private setLoanInfo(): void {
-    this.setMonthlyPayment();
-    const MONTHS_PER_YEAR: number = 12;
-    const downPayment: number = this.getDownPayment();
-    const monthlyPayment = this.getMonthlyPayment();
-    const monthlyInterestRate: number =
-      this.formValues.interestRate / MONTHS_PER_YEAR;
-    const monthlyInterestDecimal: number = monthlyInterestRate / 100;
-    const totalMonths: number = this.year * MONTHS_PER_YEAR;
-    let loanPrincipal: number = this.getInitLoanPrincipal();
-    let monthlyInterestPayment: number = monthlyInterestDecimal * loanPrincipal;
-    let monthlyPrincipalPayment: number =
-      monthlyPayment - monthlyInterestPayment;
-    let equityBanked: number = downPayment;
-
-    for (let i: number = 0; i < totalMonths; i++) {
-      loanPrincipal -= monthlyPrincipalPayment;
-      equityBanked += monthlyPrincipalPayment;
-      monthlyInterestPayment = monthlyInterestDecimal * loanPrincipal;
-      monthlyPrincipalPayment = monthlyPayment - monthlyInterestPayment;
-    }
-
-    this.monthlyInterestPayment = this.roundDecimal(monthlyInterestPayment, 2);
-    this.monthlyPrincipalPayment = this.roundDecimal(
-      monthlyPrincipalPayment,
-      2
-    );
-    this.equityBanked = this.roundDecimal(equityBanked, 2);
-  }
-
-  private setMonthlyPayment(): void {
-    this.monthlyPayment = this.roundDecimal(this.getMonthlyPayment(), 2);
-  }
-
-  private setAnnualDepreciationTaxSavings(): void {
-    this.annualDepreciationTaxSavings = this.roundDecimal(
-      this.getAnnualDepreciationTaxSavings(),
-      2
-    );
-  }
-
-  private setCompoundDepreciationTaxSavings(): void {
-    const annualTaxSavings: number = this.getAnnualDepreciationTaxSavings();
-    this.compoundDepreciationTaxSavings = this.roundDecimal(
-      annualTaxSavings * this.year,
-      2
-    );
-  }
-
-  private setPropertyValue(): void {
-    this.propertyValue = this.roundDecimal(
-      this.getPropertyValueForYear(this.year),
-      2
-    );
-  }
-
-  private setInitInvestment(): void {
-    this.initInvestment = this.roundDecimal(this.getInitInvestment(), 2);
-  }
-
-  private setVrRatio(): void {
-    const MONTHS_PER_YEAR: number = 12;
-    const annualRentalIncome: number =
-      this.formValues.monthlyRentalIncome * MONTHS_PER_YEAR;
-    // Don't need to factor in current property value, assuming rental income inflates with appreciation
-    this.vrRatio = this.roundDecimal(
-      this.formValues.initPropertyValue / annualRentalIncome,
-      2
-    );
-  }
-
-  private setAnnualOperatingIncome(): void {
-    this.annualOperatingIncome = this.roundDecimal(
-      this.getAnnualOperatingIncomeForYear(this.year),
-      2
-    );
-  }
-
-  private setCompoundOperatingIncome(): void {
-    this.compoundOperatingIncome = this.roundDecimal(
-      this.getCompoundOperatingIncome(),
-      2
-    );
-  }
-
-  private setAnnualCashOnCashRoi(): void {
-    const annualCashFlow: number = this.getAnnualCashFlow();
-    const initInvestment: number = this.getInitInvestment();
-    const annualCashOnCashRoiDecimal: number = annualCashFlow / initInvestment;
-    this.annualCashOnCashRoi = this.roundDecimal(
-      annualCashOnCashRoiDecimal * 100,
-      2
-    );
-  }
-
-  private setAnnualCashFlow(): void {
-    this.annualCashFlow = this.roundDecimal(this.getAnnualCashFlow(), 2);
-  }
-
-  private setCompoundCashFlow(): void {
-    this.compoundCashFlow = this.roundDecimal(this.getCompoundCashFlow(), 2);
-  }
-
-  private setTotalEarned(): void {
-    this.totalEarned = this.roundDecimal(this.getTotalEarned(), 2);
-  }
-
-  private setTotalRoi(): void {
-    const totalEarned = this.getTotalEarned();
-    const initInvestment = this.getInitInvestment();
-    const totalRoi = (totalEarned / initInvestment) * 100;
-    this.totalRoi = this.roundDecimal(totalRoi, 2);
-  }
-
-  private setAnnualCapRate(): void {
-    const operatingIncome: number = this.getAnnualOperatingIncomeForYear(
-      this.year
-    );
-    const propertyValue: number = this.getPropertyValueForYear(this.year);
-    const annualCapRateDecimal: number = operatingIncome / propertyValue;
-    this.annualCapRate = this.roundDecimal(annualCapRateDecimal * 100, 2);
-  }
-
-  private getInitInvestment(): number {
-    const downPayment: number = this.getDownPayment();
-    const CLOSING_COSTS: number = 5000;
-    return downPayment + CLOSING_COSTS;
-  }
-
-  private getDownPayment(): number {
-    const percentDownDecimal: number = this.formValues.percentDown / 100;
-    return this.formValues.initPropertyValue * percentDownDecimal;
-  }
-
-  private getMonthlyPayment(): number {
-    const MONTHS_PER_YEAR: number = 12;
-    const initLoanPrincipal: number = this.getInitLoanPrincipal();
-    const totalPayments: number = this.formValues.totalYears * MONTHS_PER_YEAR;
-    return this.financeLib.AM(
-      initLoanPrincipal,
-      this.formValues.interestRate,
-      totalPayments,
-      1
-    );
-  }
-
-  private getAnnualDepreciationTaxSavings(): number {
-    const RESIDENTIAL_DEPRECIATION_LIFESPAN: number = 27.5;
-    const TAX_BRACKET_DECIMAL: number = 0.22;
-    const structureValue: number =
-      this.formValues.initPropertyValue - this.formValues.landValue;
-    const annualDepreciation: number =
-      structureValue / RESIDENTIAL_DEPRECIATION_LIFESPAN;
-    return annualDepreciation * TAX_BRACKET_DECIMAL;
-  }
-
-  private getInitLoanPrincipal(): number {
-    const downPayment: number = this.getDownPayment();
-    return this.formValues.initPropertyValue - downPayment;
-  }
-
-  private getAnnualCashFlow(): number {
-    const MONTHS_PER_YEAR: number = 12;
-    const annualOperatingIncome: number = this.getAnnualOperatingIncomeForYear(
-      this.year
-    );
-    const monthlyPayment: number = this.getMonthlyPayment();
-    const annualMortgagePayment: number = monthlyPayment * MONTHS_PER_YEAR;
-    return annualOperatingIncome - annualMortgagePayment;
-  }
-
-  private getAnnualOperatingIncomeForYear(year: number): number {
-    const annualRentalIncome: number = this.getAnnualRentalIncomeForYear(year);
-    const annualOperatingExpenses: number = this.getAnnualOperatingExpensesForYear(
-      year
-    );
-    return annualRentalIncome - annualOperatingExpenses;
-  }
-
-  private getAnnualOperatingExpensesForYear(year: number): number {
-    const PROPERTY_TAX_DECIMAL: number = this.formValues.propertyTaxRate / 100;
-    const annualPropertyTax =
-      this.getPropertyValueForYear(year) * PROPERTY_TAX_DECIMAL;
-
-    const MAINTENANCE_DECIMAL: number = this.formValues.maintenanceRate / 100;
-    const ANNUAL_MAINTENANCE_COST: number =
-      this.formValues.initPropertyValue * MAINTENANCE_DECIMAL;
-
-    const annualPropertyManagementPayment = this.getPropertyManagementPaymentForYear(
-      year
-    );
-
-    const annualOperatingExpenses: number =
-      annualPropertyTax +
-      ANNUAL_MAINTENANCE_COST +
-      this.formValues.annualInsurance +
-      annualPropertyManagementPayment;
-
-    return annualOperatingExpenses;
-  }
-
-  private getPropertyManagementPaymentForYear(year: number): number {
-    const PROPERTY_MANAGEMENT_DECIMAL: number =
-      this.formValues.propertyManagementRate / 100;
-    const annualRentalIncome: number = this.getAnnualRentalIncomeForYear(year);
-    return annualRentalIncome * PROPERTY_MANAGEMENT_DECIMAL;
-  }
-
-  private getAnnualRentalIncomeForYear(year: number): number {
-    const MONTHS_PER_YEAR: number = 12;
-    const APPRECIATION_DECIMAL: number =
-      this.formValues.annualAppreciationRate / 100;
-    let annualRentalIncome =
-      this.formValues.monthlyRentalIncome * MONTHS_PER_YEAR;
-
-    for (let i: number = 1; i < year; i++) {
-      annualRentalIncome = annualRentalIncome * (1 + APPRECIATION_DECIMAL);
-    }
-
-    return annualRentalIncome;
-  }
-
-  private getCompoundOperatingIncome(): number {
-    let compoundOperatingIncome: number = 0;
-    for (let i: number = 1; i <= this.year; i++) {
-      compoundOperatingIncome =
-        compoundOperatingIncome + this.getAnnualOperatingIncomeForYear(i);
-    }
-    return compoundOperatingIncome;
-  }
-
-  private getCompoundCashFlow(): number {
-    const MONTHS_PER_YEAR: number = 12;
-    const monthlyPayment: number = this.getMonthlyPayment();
-    const compoundOperatingIncome: number = this.getCompoundOperatingIncome();
-    const compoundMortgagePayment: number =
-      monthlyPayment * MONTHS_PER_YEAR * this.year;
-    return compoundOperatingIncome - compoundMortgagePayment;
-  }
-
-  private getPropertyValueForYear(year: number): number {
-    let value: number = this.formValues.initPropertyValue;
-    const APPRECIATION_DECIMAL: number =
-      this.formValues.annualAppreciationRate / 100;
-    for (let i: number = 1; i < year; i++) {
-      value += value * APPRECIATION_DECIMAL;
-    }
-    return this.roundDecimal(value, 2);
-  }
-
-  private getTotalEarned(): number {
-    const compoundCashFlow: number = this.getCompoundCashFlow();
-    const sellingPropertyValue: number = this.getPropertyValueForYear(
-      this.year
-    );
-    const propertyValueProfit: number =
-      sellingPropertyValue - this.formValues.initPropertyValue;
-    return compoundCashFlow + propertyValueProfit;
-  }
-
-  private roundDecimal(num: number, digits: number): number {
-    const multiplier: number = Math.pow(10, digits);
-    num = parseFloat((num * multiplier).toFixed(11));
-    const tempNum: number = Math.round(num) / multiplier;
-    return +tempNum.toFixed(digits);
-  }
+export interface IProjectionMetrics {
+  propertyValue: number;
+  monthlyPayment: number;
+  monthlyInterestPayment: number;
+  monthlyPrincipalPayment: number;
+  annualDepreciationTaxSavings: number;
+  compoundDepreciationTaxSavings: number;
+  equityBanked: number;
+  initInvestment: number;
+  vrRatio: number;
+  annualOperatingIncome: number;
+  compoundOperatingIncome: number;
+  annualCashOnCashRoi: number;
+  annualCashFlow: number;
+  compoundCashFlow: number;
+  totalEarned: number;
+  totalRoi: number;
+  annualCapRate: number;
 }
+
+export interface ILoanMetrics {
+  equityBanked: number;
+  monthlyInterestPayment: number;
+  monthlyPrincipalPayment: number;
+}
+
+export const getProjectionMetrics = (
+  formValues: IFormValues,
+  year: number
+): IProjectionMetrics => {
+  const {
+    annualAppreciationRate,
+    annualInsurance,
+    initPropertyValue,
+    interestRate,
+    landValue,
+    maintenanceRate,
+    monthlyRentalIncome,
+    percentDown,
+    propertyManagementRate,
+    propertyTaxRate,
+    totalYears
+  } = formValues;
+
+  const {
+    equityBanked,
+    monthlyInterestPayment,
+    monthlyPrincipalPayment
+  } = getLoanMetricsByYearsHeld(
+    initPropertyValue,
+    percentDown,
+    totalYears,
+    interestRate,
+    year
+  );
+
+  return {
+    annualCapRate: getAnnualCapRate(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      maintenanceRate,
+      monthlyRentalIncome,
+      propertyManagementRate,
+      propertyTaxRate,
+      year
+    ),
+    annualCashFlow: getAnnualCashFlow(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      interestRate,
+      maintenanceRate,
+      monthlyRentalIncome,
+      percentDown,
+      propertyManagementRate,
+      propertyTaxRate,
+      totalYears,
+      year
+    ),
+    annualCashOnCashRoi: getAnnualCashOnCashRoi(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      interestRate,
+      maintenanceRate,
+      monthlyRentalIncome,
+      percentDown,
+      propertyManagementRate,
+      propertyTaxRate,
+      totalYears,
+      year
+    ),
+    annualDepreciationTaxSavings: getDepreciationTaxSavingsAnnual(
+      initPropertyValue,
+      landValue
+    ),
+    annualOperatingIncome: getAnnualOperatingIncomeForYear(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      maintenanceRate,
+      monthlyRentalIncome,
+      propertyManagementRate,
+      propertyTaxRate,
+      year
+    ),
+    compoundCashFlow: getCompoundCashFlow(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      interestRate,
+      maintenanceRate,
+      monthlyRentalIncome,
+      percentDown,
+      propertyManagementRate,
+      propertyTaxRate,
+      totalYears,
+      year
+    ),
+    compoundDepreciationTaxSavings: getDepreciationTaxSavingsCompound(
+      initPropertyValue,
+      landValue,
+      year
+    ),
+    compoundOperatingIncome: getCompoundOperatingIncome(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      maintenanceRate,
+      monthlyRentalIncome,
+      propertyManagementRate,
+      propertyTaxRate,
+      year
+    ),
+    equityBanked,
+    initInvestment: getInitInvestment(initPropertyValue, percentDown),
+    monthlyInterestPayment,
+    monthlyPayment: getMonthlyPayment(
+      initPropertyValue,
+      percentDown,
+      totalYears,
+      interestRate
+    ),
+    monthlyPrincipalPayment,
+    propertyValue: getPropertyValueForYear(
+      initPropertyValue,
+      annualAppreciationRate,
+      year
+    ),
+    totalEarned: getTotalEarned(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      interestRate,
+      maintenanceRate,
+      monthlyRentalIncome,
+      percentDown,
+      propertyManagementRate,
+      propertyTaxRate,
+      totalYears,
+      year
+    ),
+    totalRoi: getTotalRoi(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      interestRate,
+      maintenanceRate,
+      monthlyRentalIncome,
+      percentDown,
+      propertyManagementRate,
+      propertyTaxRate,
+      totalYears,
+      year
+    ),
+    vrRatio: getVrRatio(initPropertyValue, monthlyRentalIncome)
+  };
+};
+
+export const getInitLoanPrincipal = (
+  initPropertyValue: number,
+  downPayment: number
+) => initPropertyValue - downPayment;
+
+export const getMonthlyPayment = (
+  initPropertyValue: number,
+  percentDown: number,
+  totalYears: number,
+  interestRate: number
+) =>
+  roundDecimal(
+    calcMonthlyPayment(
+      initPropertyValue,
+      percentDown,
+      totalYears,
+      interestRate
+    ),
+    2
+  );
+
+const calcMonthlyPayment = (
+  initPropertyValue: number,
+  percentDown: number,
+  totalYears: number,
+  interestRate: number
+) => {
+  const initLoanPrincipal: number = getInitLoanPrincipal(
+    initPropertyValue,
+    calcDownPayment(initPropertyValue, percentDown)
+  );
+  const totalPayments: number = totalYears * MONTHS_PER_YEAR;
+  return new Finance().AM(initLoanPrincipal, interestRate, totalPayments, 1);
+};
+
+const calcDownPayment = (initPropertyValue: number, percentDown: number) =>
+  initPropertyValue * (percentDown / 100);
+
+export const getLoanMetricsByYearsHeld = (
+  initPropertyValue: number,
+  percentDown: number,
+  totalYears: number,
+  interestRate: number,
+  year: number
+): ILoanMetrics => {
+  const downPayment: number = calcDownPayment(initPropertyValue, percentDown);
+  const monthlyPayment = calcMonthlyPayment(
+    initPropertyValue,
+    percentDown,
+    totalYears,
+    interestRate
+  );
+  const monthlyInterestRate: number = interestRate / MONTHS_PER_YEAR;
+  const monthlyInterestDecimal: number = monthlyInterestRate / 100;
+  const totalMonths: number = year * MONTHS_PER_YEAR;
+  let loanPrincipal: number = getInitLoanPrincipal(
+    initPropertyValue,
+    calcDownPayment(initPropertyValue, percentDown)
+  );
+  let monthlyInterestPayment: number = monthlyInterestDecimal * loanPrincipal;
+  let monthlyPrincipalPayment: number = monthlyPayment - monthlyInterestPayment;
+  let equityBanked: number = downPayment;
+
+  for (let i: number = 0; i < totalMonths; i++) {
+    loanPrincipal -= monthlyPrincipalPayment;
+    equityBanked += monthlyPrincipalPayment;
+    monthlyInterestPayment = monthlyInterestDecimal * loanPrincipal;
+    monthlyPrincipalPayment = monthlyPayment - monthlyInterestPayment;
+  }
+
+  return {
+    equityBanked: roundDecimal(equityBanked, 2),
+    monthlyInterestPayment: roundDecimal(monthlyInterestPayment, 2),
+    monthlyPrincipalPayment: roundDecimal(monthlyPrincipalPayment, 2)
+  };
+};
+
+const roundDecimal = (num: number, digits: number): number => {
+  const multiplier: number = Math.pow(10, digits);
+  num = parseFloat((num * multiplier).toFixed(11));
+  const tempNum: number = Math.round(num) / multiplier;
+  return +tempNum.toFixed(digits);
+};
+
+export const getDepreciationTaxSavingsAnnual = (
+  initPropertyValue: number,
+  landValue: number
+) =>
+  roundDecimal(
+    calcAnnualDepreciationTaxSavings(initPropertyValue, landValue),
+    2
+  );
+
+export const getDepreciationTaxSavingsCompound = (
+  initPropertyValue: number,
+  landValue: number,
+  year: number
+) => {
+  const annualTaxSavings: number = calcAnnualDepreciationTaxSavings(
+    initPropertyValue,
+    landValue
+  );
+  return roundDecimal(annualTaxSavings * year, 2);
+};
+
+const calcAnnualDepreciationTaxSavings = (
+  initPropertyValue: number,
+  landValue: number
+) => {
+  const RESIDENTIAL_DEPRECIATION_LIFESPAN: number = 27.5;
+  const TAX_BRACKET_DECIMAL: number = 0.22;
+  const structureValue: number = initPropertyValue - landValue;
+  const annualDepreciation: number =
+    structureValue / RESIDENTIAL_DEPRECIATION_LIFESPAN;
+  return annualDepreciation * TAX_BRACKET_DECIMAL;
+};
+
+export const getPropertyValueForYear = (
+  initPropertyValue: number,
+  annualAppreciationRate: number,
+  year: number
+) =>
+  roundDecimal(
+    calcPropertyValueForYear(initPropertyValue, annualAppreciationRate, year),
+    2
+  );
+
+const calcPropertyValueForYear = (
+  initPropertyValue: number,
+  annualAppreciationRate: number,
+  year: number
+) => {
+  let value: number = initPropertyValue;
+  const APPRECIATION_DECIMAL: number = annualAppreciationRate / 100;
+  for (let i: number = 1; i < year; i++) {
+    value += value * APPRECIATION_DECIMAL;
+  }
+  return value;
+};
+
+export const getInitInvestment = (
+  initPropertyValue: number,
+  percentDown: number
+) => roundDecimal(calcInitInvestment(initPropertyValue, percentDown), 2);
+
+const calcInitInvestment = (initPropertyValue: number, percentDown: number) => {
+  const downPayment: number = calcDownPayment(initPropertyValue, percentDown);
+  const CLOSING_COSTS: number = 5000;
+  return downPayment + CLOSING_COSTS;
+};
+
+export const getVrRatio = (
+  initPropertyValue: number,
+  monthlyRentalIncome: number
+) => {
+  const annualRentalIncome: number = monthlyRentalIncome * MONTHS_PER_YEAR;
+  // Don't need to factor in current property value, assuming rental income inflates with appreciation
+  return roundDecimal(initPropertyValue / annualRentalIncome, 2);
+};
+
+export const getAnnualOperatingIncomeForYear = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  year: number
+) =>
+  roundDecimal(
+    calcAnnualOperatingIncomeForYear(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      maintenanceRate,
+      monthlyRentalIncome,
+      propertyManagementRate,
+      propertyTaxRate,
+      year
+    ),
+    2
+  );
+
+const calcAnnualOperatingIncomeForYear = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  year: number
+) => {
+  const annualRentalIncome: number = calcAnnualRentalIncomeForYear(
+    annualAppreciationRate,
+    monthlyRentalIncome,
+    year
+  );
+  const annualOperatingExpenses: number = calcAnnualOperatingExpensesForYear(
+    annualAppreciationRate,
+    annualInsurance,
+    initPropertyValue,
+    maintenanceRate,
+    monthlyRentalIncome,
+    propertyManagementRate,
+    propertyTaxRate,
+    year
+  );
+  return annualRentalIncome - annualOperatingExpenses;
+};
+
+const calcAnnualRentalIncomeForYear = (
+  annualAppreciationRate: number,
+  monthlyRentalIncome: number,
+  year: number
+) => {
+  const APPRECIATION_DECIMAL: number = annualAppreciationRate / 100;
+  let annualRentalIncome = monthlyRentalIncome * MONTHS_PER_YEAR;
+
+  for (let i: number = 1; i < year; i++) {
+    annualRentalIncome = annualRentalIncome * (1 + APPRECIATION_DECIMAL);
+  }
+
+  return annualRentalIncome;
+};
+
+const calcAnnualOperatingExpensesForYear = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  year: number
+) => {
+  const PROPERTY_TAX_DECIMAL: number = propertyTaxRate / 100;
+  const annualPropertyTax =
+    calcPropertyValueForYear(initPropertyValue, annualAppreciationRate, year) *
+    PROPERTY_TAX_DECIMAL;
+
+  const MAINTENANCE_DECIMAL: number = maintenanceRate / 100;
+  const ANNUAL_MAINTENANCE_COST: number =
+    initPropertyValue * MAINTENANCE_DECIMAL;
+
+  const annualPropertyManagementPayment = calcPropertyManagementPaymentForYear(
+    annualAppreciationRate,
+    monthlyRentalIncome,
+    propertyManagementRate,
+    year
+  );
+
+  return (
+    annualPropertyTax +
+    ANNUAL_MAINTENANCE_COST +
+    annualInsurance +
+    annualPropertyManagementPayment
+  );
+};
+
+const calcPropertyManagementPaymentForYear = (
+  annualAppreciationRate: number,
+  monthlyRentalIncome: number,
+  propertyManagementRate: number,
+  year: number
+) => {
+  const PROPERTY_MANAGEMENT_DECIMAL: number = propertyManagementRate / 100;
+  const annualRentalIncome: number = calcAnnualRentalIncomeForYear(
+    annualAppreciationRate,
+    monthlyRentalIncome,
+    year
+  );
+  return annualRentalIncome * PROPERTY_MANAGEMENT_DECIMAL;
+};
+
+export const getCompoundOperatingIncome = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  year: number
+) =>
+  roundDecimal(
+    calcCompoundOperatingIncome(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      maintenanceRate,
+      monthlyRentalIncome,
+      propertyManagementRate,
+      propertyTaxRate,
+      year
+    ),
+    2
+  );
+
+const calcCompoundOperatingIncome = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  year: number
+): number => {
+  let compoundOperatingIncome: number = 0;
+  for (let i: number = 1; i <= year; i++) {
+    compoundOperatingIncome =
+      compoundOperatingIncome +
+      calcAnnualOperatingIncomeForYear(
+        annualAppreciationRate,
+        annualInsurance,
+        initPropertyValue,
+        maintenanceRate,
+        monthlyRentalIncome,
+        propertyManagementRate,
+        propertyTaxRate,
+        i
+      );
+  }
+  return compoundOperatingIncome;
+};
+
+export const getAnnualCashOnCashRoi = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  interestRate: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  percentDown: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  totalYears: number,
+  year: number
+) => {
+  const annualCashFlow: number = calcAnnualCashFlow(
+    annualAppreciationRate,
+    annualInsurance,
+    initPropertyValue,
+    interestRate,
+    maintenanceRate,
+    monthlyRentalIncome,
+    percentDown,
+    propertyManagementRate,
+    propertyTaxRate,
+    totalYears,
+    year
+  );
+  const initInvestment: number = calcInitInvestment(
+    initPropertyValue,
+    percentDown
+  );
+  const annualCashOnCashRoiDecimal: number = annualCashFlow / initInvestment;
+  return roundDecimal(annualCashOnCashRoiDecimal * 100, 2);
+};
+
+export const getAnnualCashFlow = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  interestRate: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  percentDown: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  totalYears: number,
+  year: number
+) =>
+  roundDecimal(
+    calcAnnualCashFlow(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      interestRate,
+      maintenanceRate,
+      monthlyRentalIncome,
+      percentDown,
+      propertyManagementRate,
+      propertyTaxRate,
+      totalYears,
+      year
+    ),
+    2
+  );
+
+const calcAnnualCashFlow = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  interestRate: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  percentDown: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  totalYears: number,
+  year: number
+) => {
+  const annualOperatingIncome: number = calcAnnualOperatingIncomeForYear(
+    annualAppreciationRate,
+    annualInsurance,
+    initPropertyValue,
+    maintenanceRate,
+    monthlyRentalIncome,
+    propertyManagementRate,
+    propertyTaxRate,
+    year
+  );
+  const monthlyPayment: number = calcMonthlyPayment(
+    initPropertyValue,
+    percentDown,
+    totalYears,
+    interestRate
+  );
+  const annualMortgagePayment: number = monthlyPayment * MONTHS_PER_YEAR;
+  return annualOperatingIncome - annualMortgagePayment;
+};
+
+export const getCompoundCashFlow = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  interestRate: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  percentDown: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  totalYears: number,
+  year: number
+) =>
+  roundDecimal(
+    calcCompoundCashFlow(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      interestRate,
+      maintenanceRate,
+      monthlyRentalIncome,
+      percentDown,
+      propertyManagementRate,
+      propertyTaxRate,
+      totalYears,
+      year
+    ),
+    2
+  );
+
+const calcCompoundCashFlow = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  interestRate: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  percentDown: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  totalYears: number,
+  year: number
+) => {
+  const monthlyPayment: number = calcMonthlyPayment(
+    initPropertyValue,
+    percentDown,
+    totalYears,
+    interestRate
+  );
+  const compoundOperatingIncome: number = calcCompoundOperatingIncome(
+    annualAppreciationRate,
+    annualInsurance,
+    initPropertyValue,
+    maintenanceRate,
+    monthlyRentalIncome,
+    propertyManagementRate,
+    propertyTaxRate,
+    year
+  );
+  const compoundMortgagePayment: number =
+    monthlyPayment * MONTHS_PER_YEAR * year;
+  return compoundOperatingIncome - compoundMortgagePayment;
+};
+
+export const getTotalEarned = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  interestRate: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  percentDown: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  totalYears: number,
+  year: number
+) =>
+  roundDecimal(
+    calcTotalEarned(
+      annualAppreciationRate,
+      annualInsurance,
+      initPropertyValue,
+      interestRate,
+      maintenanceRate,
+      monthlyRentalIncome,
+      percentDown,
+      propertyManagementRate,
+      propertyTaxRate,
+      totalYears,
+      year
+    ),
+    2
+  );
+
+const calcTotalEarned = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  interestRate: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  percentDown: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  totalYears: number,
+  year: number
+) => {
+  const compoundCashFlow: number = calcCompoundCashFlow(
+    annualAppreciationRate,
+    annualInsurance,
+    initPropertyValue,
+    interestRate,
+    maintenanceRate,
+    monthlyRentalIncome,
+    percentDown,
+    propertyManagementRate,
+    propertyTaxRate,
+    totalYears,
+    year
+  );
+  const sellingPropertyValue: number = calcPropertyValueForYear(
+    initPropertyValue,
+    annualAppreciationRate,
+    year
+  );
+  const propertyValueProfit: number = sellingPropertyValue - initPropertyValue;
+  return compoundCashFlow + propertyValueProfit;
+};
+
+export const getTotalRoi = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  interestRate: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  percentDown: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  totalYears: number,
+  year: number
+) => {
+  const totalEarned = calcTotalEarned(
+    annualAppreciationRate,
+    annualInsurance,
+    initPropertyValue,
+    interestRate,
+    maintenanceRate,
+    monthlyRentalIncome,
+    percentDown,
+    propertyManagementRate,
+    propertyTaxRate,
+    totalYears,
+    year
+  );
+  const initInvestment = calcInitInvestment(initPropertyValue, percentDown);
+  return roundDecimal((totalEarned / initInvestment) * 100, 2);
+};
+
+export const getAnnualCapRate = (
+  annualAppreciationRate: number,
+  annualInsurance: number,
+  initPropertyValue: number,
+  maintenanceRate: number,
+  monthlyRentalIncome: number,
+  propertyManagementRate: number,
+  propertyTaxRate: number,
+  year: number
+) => {
+  const operatingIncome: number = calcAnnualOperatingIncomeForYear(
+    annualAppreciationRate,
+    annualInsurance,
+    initPropertyValue,
+    maintenanceRate,
+    monthlyRentalIncome,
+    propertyManagementRate,
+    propertyTaxRate,
+    year
+  );
+  const propertyValue: number = calcPropertyValueForYear(
+    initPropertyValue,
+    annualAppreciationRate,
+    year
+  );
+  const annualCapRateDecimal: number = operatingIncome / propertyValue;
+  return roundDecimal(annualCapRateDecimal * 100, 2);
+};

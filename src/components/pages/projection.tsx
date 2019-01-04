@@ -4,7 +4,6 @@ import PropertyInfoForm from "components/property-info";
 import * as React from "react";
 import styled from "styled-components";
 import { IFormValues } from "types/form-values";
-import { ProjectionData } from "utils/projection";
 
 const Container = styled.div`
   display: grid;
@@ -29,17 +28,17 @@ const ResultsForm = styled(ProjectionResults)`
 `;
 
 interface IState {
-  metrics?: ProjectionData;
+  formValues?: IFormValues;
 }
 
 class ProjectionPage extends React.Component<{}, IState> {
   public state: IState = {
-    metrics: undefined
+    formValues: undefined
   };
 
   public handlePropertyInfoSubmit = (formValues: IFormValues) =>
     this.setState({
-      metrics: new ProjectionData(formValues)
+      formValues
     });
 
   public render() {
@@ -47,7 +46,7 @@ class ProjectionPage extends React.Component<{}, IState> {
       <Page title="Projection Analysis">
         <Container>
           <InfoForm onSubmit={this.handlePropertyInfoSubmit} />
-          <ResultsForm metrics={this.state.metrics} />
+          <ResultsForm formValues={this.state.formValues} />
         </Container>
       </Page>
     );
