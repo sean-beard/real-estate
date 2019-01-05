@@ -1,7 +1,22 @@
 import * as React from "react";
+import styled from "styled-components";
+
 import { IFormValues } from "types/form-values";
 import * as utils from "utils/projection";
-import { InputLabel } from "./input";
+import { Input, InputLabel } from "./input";
+
+const YearInputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 7rem;
+  margin-bottom: 1rem;
+`;
+
+const YearInput = styled(Input)`
+  text-align: center;
+  width: 4rem;
+`;
 
 interface IProps {
   formValues?: IFormValues;
@@ -15,6 +30,13 @@ interface IState {
 class ResultsForm extends React.Component<IProps, IState> {
   public state: IState = {
     year: 1
+  };
+
+  public handleYearChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const year = parseInt(e.currentTarget.value, 10);
+    if (year > 0) {
+      this.setState({ year });
+    }
   };
 
   public render() {
@@ -45,7 +67,14 @@ class ResultsForm extends React.Component<IProps, IState> {
 
     return (
       <div>
-        <h3>Results Form</h3>
+        <YearInputWrapper>
+          <InputLabel>Year</InputLabel>
+          <YearInput
+            type="number"
+            value={this.state.year}
+            onChange={this.handleYearChange}
+          />
+        </YearInputWrapper>
         <InputLabel>Annual Cap Rate</InputLabel>
         <p>{annualCapRate}</p>
         <InputLabel>Annual Cash Flow</InputLabel>
