@@ -5,14 +5,10 @@ import { defaultValues } from "config/form";
 import * as React from "react";
 import styled from "styled-components";
 import { IFormValues } from "types/form-values";
+import { Input } from "./input";
 
 const FormLabel = styled.div`
   color: ${colors.font};
-`;
-
-const Input = styled.input`
-  width: 150px;
-  height: 20px;
 `;
 
 const Button = styled.button`
