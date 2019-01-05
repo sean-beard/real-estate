@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { IFormValues } from "types/form-values";
 import * as utils from "utils/projection";
 import { Input, InputLabel } from "./input";
+import Result, { ResultType } from "./result";
 
 const YearInputWrapper = styled.div`
   display: flex;
@@ -75,40 +76,88 @@ class ResultsForm extends React.Component<IProps, IState> {
             onChange={this.handleYearChange}
           />
         </YearInputWrapper>
-        <InputLabel>Annual Cap Rate</InputLabel>
-        <p>{annualCapRate}</p>
-        <InputLabel>Annual Cash Flow</InputLabel>
-        <p>{annualCashFlow}</p>
-        <InputLabel>Annual Cash on Cash ROI</InputLabel>
-        <p>{annualCashOnCashRoi}</p>
-        <InputLabel>Annual Depreciation Tax Savings</InputLabel>
-        <p>{annualDepreciationTaxSavings}</p>
-        <InputLabel>Annual Operating Income</InputLabel>
-        <p>{annualOperatingIncome}</p>
-        <InputLabel>Compound Cash Flow</InputLabel>
-        <p>{compoundCashFlow}</p>
-        <InputLabel>Compound Depreciation Tax Savings</InputLabel>
-        <p>{compoundDepreciationTaxSavings}</p>
-        <InputLabel>Compound Operating Income</InputLabel>
-        <p>{compoundOperatingIncome}</p>
-        <InputLabel>Equity Banked</InputLabel>
-        <p>{equityBanked}</p>
-        <InputLabel>Initial Investment</InputLabel>
-        <p>{initInvestment}</p>
-        <InputLabel>Monthly Payment</InputLabel>
-        <p>{monthlyPayment}</p>
-        <InputLabel>Monthly Interest Payment</InputLabel>
-        <p>{monthlyInterestPayment}</p>
-        <InputLabel>Monthly Principal Payment</InputLabel>
-        <p>{monthlyPrincipalPayment}</p>
-        <InputLabel>Property Value</InputLabel>
-        <p>{propertyValue}</p>
-        <InputLabel>VR Ratio</InputLabel>
-        <p>{vrRatio}</p>
-        <InputLabel>Total Earned</InputLabel>
-        <p>{totalEarned}</p>
-        <InputLabel>Total ROI</InputLabel>
-        <p>{totalRoi}</p>
+
+        <Result
+          label="Annual Cap Rate"
+          value={annualCapRate}
+          type={ResultType.numeric}
+        />
+        <Result
+          label="Annual Cash Flow"
+          value={annualCashFlow}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Annual Cash on Cash ROI"
+          value={annualCashOnCashRoi}
+          type={ResultType.percentage}
+        />
+        <Result
+          label="Annual Depreciation Tax Savings"
+          value={annualDepreciationTaxSavings}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Annual Operating Income"
+          value={annualOperatingIncome}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Compound Cash Flow"
+          value={compoundCashFlow}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Compound Depreciation Tax Savings"
+          value={compoundDepreciationTaxSavings}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Compound Operating Income"
+          value={compoundOperatingIncome}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Equity Banked"
+          value={equityBanked}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Initial Investment"
+          value={initInvestment}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Monthly Payment"
+          value={monthlyPayment}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Monthly Interest Payment"
+          value={monthlyInterestPayment}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Monthly Principal Payment"
+          value={monthlyPrincipalPayment}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Property Value"
+          value={propertyValue}
+          type={ResultType.monetary}
+        />
+        <Result label="VR Ratio" value={vrRatio} type={ResultType.numeric} />
+        <Result
+          label="Total Earned"
+          value={totalEarned}
+          type={ResultType.monetary}
+        />
+        <Result
+          label="Total ROI"
+          value={totalRoi}
+          type={ResultType.percentage}
+        />
       </div>
     );
   }
