@@ -1,4 +1,4 @@
-import { IInputProps, Input, InputLabel, MetricUnit } from "components/input";
+import { IInputProps, InlineText, Input, InputLabel } from "components/input";
 import * as React from "react";
 
 const PercentageInput: React.SFC<IInputProps> = ({
@@ -10,7 +10,7 @@ const PercentageInput: React.SFC<IInputProps> = ({
     <InputLabel>{label}</InputLabel>
     <div>
       <Input type="number" placeholder={placeholder} {...rest} />
-      <MetricUnit> %</MetricUnit>
+      <InlineText> %</InlineText>
     </div>
   </React.Fragment>
 );

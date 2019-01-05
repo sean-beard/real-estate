@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { InputLabel, MetricUnit } from "components/input";
+import { InlineText, InputLabel } from "components/input";
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,7 +37,7 @@ const Result: React.SFC<IProps> = ({ label, value, type }) => {
   return (
     <Wrapper>
       <Label>{`${label}:`}</Label>
-      <MetricUnit>{getDisplayVal()}</MetricUnit>
+      <InlineText>{getDisplayVal()}</InlineText>
     </Wrapper>
   );
 };

@@ -10,7 +10,7 @@ export const InputLabel = styled.div`
   color: ${colors.font};
 `;
 
-export const MetricUnit = styled.span`
+export const InlineText = styled.span`
   color: ${colors.font};
 `;
 
