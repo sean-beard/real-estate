@@ -10,7 +10,7 @@ const YearInputWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 7rem;
+  width: 10rem;
   margin-bottom: 1rem;
 `;
 
@@ -69,7 +69,7 @@ class ResultsForm extends React.Component<IProps, IState> {
     return (
       <div>
         <YearInputWrapper>
-          <InputLabel>Year</InputLabel>
+          <InputLabel>Years Held</InputLabel>
           <YearInput
             type="number"
             value={this.state.year}
