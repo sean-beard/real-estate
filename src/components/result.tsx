@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 import { InlineText, InputLabel } from "components/input";
+import { numberWithCommas } from "utils/data";
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,13 +26,14 @@ interface IProps {
 
 const Result: React.SFC<IProps> = ({ label, value, type }) => {
   const getDisplayVal = () => {
+    const formattedVal = numberWithCommas(value);
     if (type === ResultType.monetary) {
-      return `$${value}`;
+      return `$${formattedVal}`;
     }
     if (type === ResultType.percentage) {
-      return `${value}%`;
+      return `${formattedVal}%`;
     }
-    return value;
+    return formattedVal;
   };
 
   return (
