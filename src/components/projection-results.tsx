@@ -46,25 +46,7 @@ class ResultsForm extends React.Component<IProps, IState> {
       return null;
     }
 
-    const {
-      annualCapRate,
-      annualCashFlow,
-      annualCashOnCashRoi,
-      annualDepreciationTaxSavings,
-      annualOperatingIncome,
-      compoundCashFlow,
-      compoundDepreciationTaxSavings,
-      compoundOperatingIncome,
-      equityBanked,
-      initInvestment,
-      monthlyInterestPayment,
-      monthlyPayment,
-      monthlyPrincipalPayment,
-      propertyValue,
-      totalEarned,
-      totalRoi,
-      vrRatio
-    } = utils.getProjectionMetrics(formValues, this.state.year);
+    const metrics = utils.getProjectionMetrics(formValues, this.state.year);
 
     return (
       <div>
@@ -79,83 +61,87 @@ class ResultsForm extends React.Component<IProps, IState> {
 
         <Result
           label="Annual Cap Rate"
-          value={annualCapRate}
+          value={metrics.annualCapRate}
           type={ResultType.numeric}
         />
         <Result
           label="Annual Cash Flow"
-          value={annualCashFlow}
+          value={metrics.annualCashFlow}
           type={ResultType.monetary}
         />
         <Result
           label="Annual Cash on Cash ROI"
-          value={annualCashOnCashRoi}
+          value={metrics.annualCashOnCashRoi}
           type={ResultType.percentage}
         />
         <Result
           label="Annual Depreciation Tax Savings"
-          value={annualDepreciationTaxSavings}
+          value={metrics.annualDepreciationTaxSavings}
           type={ResultType.monetary}
         />
         <Result
           label="Annual Operating Income"
-          value={annualOperatingIncome}
+          value={metrics.annualOperatingIncome}
           type={ResultType.monetary}
         />
         <Result
           label="Compound Cash Flow"
-          value={compoundCashFlow}
+          value={metrics.compoundCashFlow}
           type={ResultType.monetary}
         />
         <Result
           label="Compound Depreciation Tax Savings"
-          value={compoundDepreciationTaxSavings}
+          value={metrics.compoundDepreciationTaxSavings}
           type={ResultType.monetary}
         />
         <Result
           label="Compound Operating Income"
-          value={compoundOperatingIncome}
+          value={metrics.compoundOperatingIncome}
           type={ResultType.monetary}
         />
         <Result
           label="Equity Banked"
-          value={equityBanked}
+          value={metrics.equityBanked}
           type={ResultType.monetary}
         />
         <Result
           label="Initial Investment"
-          value={initInvestment}
+          value={metrics.initInvestment}
           type={ResultType.monetary}
         />
         <Result
           label="Monthly Payment"
-          value={monthlyPayment}
+          value={metrics.monthlyPayment}
           type={ResultType.monetary}
         />
         <Result
           label="Monthly Interest Payment"
-          value={monthlyInterestPayment}
+          value={metrics.monthlyInterestPayment}
           type={ResultType.monetary}
         />
         <Result
           label="Monthly Principal Payment"
-          value={monthlyPrincipalPayment}
+          value={metrics.monthlyPrincipalPayment}
           type={ResultType.monetary}
         />
         <Result
           label="Property Value"
-          value={propertyValue}
+          value={metrics.propertyValue}
           type={ResultType.monetary}
         />
-        <Result label="VR Ratio" value={vrRatio} type={ResultType.numeric} />
+        <Result
+          label="VR Ratio"
+          value={metrics.vrRatio}
+          type={ResultType.numeric}
+        />
         <Result
           label="Total Earned"
-          value={totalEarned}
+          value={metrics.totalEarned}
           type={ResultType.monetary}
         />
         <Result
           label="Total ROI"
-          value={totalRoi}
+          value={metrics.totalRoi}
           type={ResultType.percentage}
         />
       </div>
