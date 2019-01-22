@@ -19,11 +19,11 @@ const Container = styled.div`
   }
 `;
 
-const InfoForm = styled(PropertyInfoForm)`
+const InfoForm = styled.div`
   grid-area: form;
 `;
 
-const ResultsForm = styled(ProjectionResults)`
+const Results = styled.div`
   grid-area: results;
 `;
 
@@ -45,8 +45,12 @@ class ProjectionPage extends React.Component<{}, IState> {
     return (
       <Page title="Projection Analysis">
         <Container>
-          <InfoForm onSubmit={this.handlePropertyInfoSubmit} />
-          <ResultsForm formValues={this.state.formValues} />
+          <InfoForm>
+            <PropertyInfoForm onSubmit={this.handlePropertyInfoSubmit} />
+          </InfoForm>
+          <Results>
+            <ProjectionResults formValues={this.state.formValues} />
+          </Results>
         </Container>
       </Page>
     );
