@@ -11,6 +11,34 @@ export const colors = {
   toggleHover: "DDD"
 };
 
-export const Label = styled.div`
+export enum FontWeight {
+  light = 300,
+  regular = 400,
+  medium = 500,
+  semiBold = 600,
+  bold = 700
+}
+
+export enum Breakpoints {
+  desktop = "max-width: 70em",
+  tablet = "max-width: 48em",
+  mobile = "max-width: 37.5em"
+}
+
+export enum Spacing {
+  micro = "0.5rem",
+  small = "1rem",
+  medium = "2rem",
+  large = "4rem",
+  xlarge = "8rem"
+}
+
+export const Label = styled.label`
   color: ${colors.font};
+  font-size: ${Spacing.small};
+  font-weight: ${FontWeight.medium};
+
+  @media (${Breakpoints.mobile}) {
+    font-size: 0.875rem;
+  }
 `;
