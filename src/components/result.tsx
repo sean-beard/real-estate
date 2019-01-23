@@ -1,14 +1,15 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { InlineText, InputLabel } from "components/input";
+import { InlineText } from "components/input";
+import { Label } from "components/typography";
 import { numberWithCommas } from "utils/data";
 
 const Wrapper = styled.div`
   display: flex;
 `;
 
-const Label = styled(InputLabel)`
+const ResultLabel = styled(Label)`
   margin-right: 0.5rem;
 `;
 
@@ -38,7 +39,7 @@ const Result: React.SFC<IProps> = ({ label, value, type }) => {
 
   return (
     <Wrapper>
-      <Label>{`${label}:`}</Label>
+      <ResultLabel>{`${label}:`}</ResultLabel>
       <InlineText>{getDisplayVal()}</InlineText>
     </Wrapper>
   );

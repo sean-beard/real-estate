@@ -6,10 +6,6 @@ export const Input = styled.input`
   height: 20px;
 `;
 
-export const InputLabel = styled.div`
-  color: ${colors.font};
-`;
-
 export const InlineText = styled.span`
   color: ${colors.font};
 `;

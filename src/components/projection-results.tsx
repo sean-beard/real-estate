@@ -1,9 +1,10 @@
 import * as React from "react";
 import styled from "styled-components";
 
+import { Label } from "components/typography";
 import { IFormValues } from "types/form-values";
 import * as utils from "utils/projection";
-import { Input, InputLabel } from "./input";
+import { Input } from "./input";
 import Result, { ResultType } from "./result";
 
 const YearInputWrapper = styled.div`
@@ -51,7 +52,7 @@ class ResultsForm extends React.Component<IProps, IState> {
     return (
       <div>
         <YearInputWrapper>
-          <InputLabel>Years Held</InputLabel>
+          <Label>Years Held</Label>
           <YearInput
             type="number"
             value={this.state.year}

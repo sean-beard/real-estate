@@ -1,3 +1,5 @@
+import styled from "styled-components";
+
 export const colors = {
   blue: "#EEE",
   button: "#607D8B",
@@ -8,3 +10,7 @@ export const colors = {
   toggle: "#EEE",
   toggleHover: "DDD"
 };
+
+export const Label = styled.div`
+  color: ${colors.font};
+`;

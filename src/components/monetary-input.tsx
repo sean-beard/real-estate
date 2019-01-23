@@ -1,4 +1,5 @@
-import { IInputProps, InlineText, Input, InputLabel } from "components/input";
+import { IInputProps, InlineText, Input } from "components/input";
+import { Label } from "components/typography";
 import * as React from "react";
 
 const MonetaryInput: React.SFC<IInputProps> = ({
@@ -7,7 +8,7 @@ const MonetaryInput: React.SFC<IInputProps> = ({
   ...rest
 }: IInputProps) => (
   <React.Fragment>
-    <InputLabel>{label}</InputLabel>
+    <Label>{label}</Label>
     <div>
       <InlineText>$ </InlineText>
       <Input type="number" min="0" placeholder={placeholder} {...rest} />
