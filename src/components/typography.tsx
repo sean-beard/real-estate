@@ -33,6 +33,17 @@ export enum Spacing {
   xlarge = "8rem"
 }
 
+export const H3 = styled.h3`
+  font-size: 1.5rem;
+  font-weight: ${FontWeight.light};
+  line-height: 1.25;
+  margin: 0;
+
+  @media (${Breakpoints.mobile}) {
+    font-size: 1.125rem;
+  }
+`;
+
 export const H4 = styled.h4`
   font-size: 1.125rem;
   font-weight: ${FontWeight.light};

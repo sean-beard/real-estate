@@ -24,9 +24,10 @@ interface IProps {
   label: string;
   value: number;
   type: ResultType;
+  highlighted?: boolean;
 }
 
-const Result: React.SFC<IProps> = ({ label, value, type }) => {
+const Result: React.SFC<IProps> = ({ label, value, type, highlighted }) => {
   const getDisplayVal = () => {
     const formattedVal = numberWithCommas(value);
     if (type === ResultType.monetary) {
@@ -41,7 +42,11 @@ const Result: React.SFC<IProps> = ({ label, value, type }) => {
   return (
     <Wrapper>
       <ResultLabel>{label}</ResultLabel>
-      <T.H4>{getDisplayVal()}</T.H4>
+      {highlighted ? (
+        <T.H3>{getDisplayVal()}</T.H3>
+      ) : (
+        <T.H4>{getDisplayVal()}</T.H4>
+      )}
     </Wrapper>
   );
 };

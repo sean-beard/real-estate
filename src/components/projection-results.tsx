@@ -61,19 +61,33 @@ class ResultsForm extends React.Component<IProps, IState> {
         </YearInputWrapper>
 
         <Result
-          label="Annual Cap Rate"
-          value={metrics.annualCapRate}
-          type={ResultType.numeric}
+          label="Total ROI"
+          value={metrics.totalRoi}
+          type={ResultType.percentage}
+          highlighted={true}
         />
         <Result
           label="Annual Cash Flow"
           value={metrics.annualCashFlow}
           type={ResultType.monetary}
+          highlighted={true}
         />
         <Result
           label="Annual Cash on Cash ROI"
           value={metrics.annualCashOnCashRoi}
           type={ResultType.percentage}
+          highlighted={true}
+        />
+        <Result
+          label="Equity Banked"
+          value={metrics.equityBanked}
+          type={ResultType.monetary}
+          highlighted={true}
+        />
+        <Result
+          label="Annual Cap Rate"
+          value={metrics.annualCapRate}
+          type={ResultType.numeric}
         />
         <Result
           label="Annual Depreciation Tax Savings"
@@ -98,11 +112,6 @@ class ResultsForm extends React.Component<IProps, IState> {
         <Result
           label="Compound Operating Income"
           value={metrics.compoundOperatingIncome}
-          type={ResultType.monetary}
-        />
-        <Result
-          label="Equity Banked"
-          value={metrics.equityBanked}
           type={ResultType.monetary}
         />
         <Result
@@ -139,11 +148,6 @@ class ResultsForm extends React.Component<IProps, IState> {
           label="Total Earned"
           value={metrics.totalEarned}
           type={ResultType.monetary}
-        />
-        <Result
-          label="Total ROI"
-          value={metrics.totalRoi}
-          type={ResultType.percentage}
         />
       </div>
     );
