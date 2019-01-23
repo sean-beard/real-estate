@@ -1,6 +1,7 @@
+import * as React from "react";
+
 import { IInputProps, InlineText, Input } from "components/input";
 import { Label } from "components/typography";
-import * as React from "react";
 
 const MonetaryInput: React.SFC<IInputProps> = ({
   label,

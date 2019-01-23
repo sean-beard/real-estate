@@ -1,8 +1,9 @@
+import * as React from "react";
+
 import MonetaryInput from "components/monetary-input";
 import PercentageInput from "components/percentage-input";
 import { colors } from "components/typography";
 import { defaultValues } from "config/form";
-import * as React from "react";
 import styled from "styled-components";
 import { IFormValues } from "types/form-values";
 import { Input } from "./input";

@@ -1,7 +1,8 @@
-import { colors } from "components/typography";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+
+import { colors } from "components/typography";
 
 const Header = styled.div`
   background-color: ${colors.blue};

@@ -1,4 +1,5 @@
 import { Finance } from "financejs";
+
 import { IFormValues } from "types/form-values";
 
 const MONTHS_PER_YEAR: number = 12;

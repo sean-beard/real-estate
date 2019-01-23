@@ -1,6 +1,7 @@
+import * as React from "react";
+
 import { IInputProps, InlineText, Input } from "components/input";
 import { Label } from "components/typography";
-import * as React from "react";
 
 const PercentageInput: React.SFC<IInputProps> = ({
   label,

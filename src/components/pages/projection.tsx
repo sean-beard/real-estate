@@ -1,8 +1,9 @@
+import * as React from "react";
+import styled from "styled-components";
+
 import Page from "components/page";
 import ProjectionResults from "components/projection-results";
 import PropertyInfoForm from "components/property-info";
-import * as React from "react";
-import styled from "styled-components";
 import { IFormValues } from "types/form-values";
 
 const Container = styled.div`
