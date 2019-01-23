@@ -1,16 +1,17 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { InlineText } from "components/input";
-import { Label } from "components/typography";
+import * as T from "components/typography";
 import { numberWithCommas } from "utils/data";
 
 const Wrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  margin-bottom: ${T.Spacing.micro};
 `;
 
-const ResultLabel = styled(Label)`
-  margin-right: 0.5rem;
+const ResultLabel = styled(T.Label)`
+  margin-bottom: ${T.Spacing.micro};
 `;
 
 export enum ResultType {
@@ -39,8 +40,8 @@ const Result: React.SFC<IProps> = ({ label, value, type }) => {
 
   return (
     <Wrapper>
-      <ResultLabel>{`${label}:`}</ResultLabel>
-      <InlineText>{getDisplayVal()}</InlineText>
+      <ResultLabel>{label}</ResultLabel>
+      <T.H4>{getDisplayVal()}</T.H4>
     </Wrapper>
   );
 };
