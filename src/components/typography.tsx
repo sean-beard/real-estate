@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const colors = {
   blue: "#EEE",
@@ -33,6 +33,16 @@ export enum Spacing {
   xlarge = "8rem"
 }
 
+export const labelStyles = css`
+  color: ${colors.font};
+  font-size: ${Spacing.small};
+  font-weight: ${FontWeight.medium};
+
+  @media (${Breakpoints.mobile}) {
+    font-size: 0.875rem;
+  }
+`;
+
 export const H3 = styled.h3`
   font-size: 1.5rem;
   font-weight: ${FontWeight.light};
@@ -56,11 +66,5 @@ export const H4 = styled.h4`
 `;
 
 export const Label = styled.label`
-  color: ${colors.font};
-  font-size: ${Spacing.small};
-  font-weight: ${FontWeight.medium};
-
-  @media (${Breakpoints.mobile}) {
-    font-size: 0.875rem;
-  }
+  ${labelStyles}
 `;

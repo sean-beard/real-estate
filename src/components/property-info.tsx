@@ -2,7 +2,7 @@ import * as React from "react";
 
 import MonetaryInput from "components/monetary-input";
 import PercentageInput from "components/percentage-input";
-import { colors } from "components/typography";
+import { colors, labelStyles } from "components/typography";
 import { defaultValues } from "config/form";
 import styled from "styled-components";
 import { IFormValues } from "types/form-values";
@@ -13,6 +13,7 @@ const FormLabel = styled.div`
 `;
 
 const Button = styled.button`
+  ${labelStyles}
   font-family: Arial;
   background-color: ${colors.button};
   border: none;
