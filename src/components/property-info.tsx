@@ -75,8 +75,9 @@ const Form = styled.form`
   grid-gap: 0.5em;
 `;
 
-interface IProps {
+export interface IPropertyInfoFormProps {
   onSubmit: (formValues: IFormValues) => void;
+  values?: IFormValues;
 }
 
 interface IState {
@@ -84,9 +85,12 @@ interface IState {
   showAdvanced: boolean;
 }
 
-export default class PropertyInfoForm extends React.Component<IProps, IState> {
+export default class PropertyInfoForm extends React.Component<
+  IPropertyInfoFormProps,
+  IState
+> {
   public state: IState = {
-    formValues: defaultValues,
+    formValues: this.props.values || defaultValues,
     showAdvanced: false
   };
 
@@ -125,7 +129,7 @@ export default class PropertyInfoForm extends React.Component<IProps, IState> {
       propertyManagementRate,
       propertyTaxRate,
       totalYears
-    } = defaultValues;
+    } = this.state.formValues;
 
     return (
       <Form onSubmit={this.handleSubmit}>
@@ -133,38 +137,38 @@ export default class PropertyInfoForm extends React.Component<IProps, IState> {
           label="Property Value:"
           name="initPropertyValue"
           onChange={this.handleInputChange}
-          placeholder={initPropertyValue.toString()}
+          value={initPropertyValue.toString()}
         />
         <MonetaryInput
           label="Monthly Rental Income:"
           name="monthlyRentalIncome"
           onChange={this.handleInputChange}
-          placeholder={monthlyRentalIncome.toString()}
+          value={monthlyRentalIncome.toString()}
         />
         <MonetaryInput
           label="Land Value:"
           name="landValue"
           onChange={this.handleInputChange}
-          placeholder={landValue.toString()}
+          value={landValue.toString()}
         />
         <PercentageInput
           label="Percent Down Payment:"
           name="percentDown"
           onChange={this.handleInputChange}
-          placeholder={percentDown.toString()}
+          value={percentDown.toString()}
         />
         <FormLabel>Total Years to Hold:</FormLabel>
         <Input
           name="totalYears"
           onChange={this.handleInputChange}
-          placeholder={totalYears.toString()}
+          value={totalYears.toString()}
           type="number"
         />
         <PercentageInput
           label="Mortgage Interest Rate:"
           name="interestRate"
           onChange={this.handleInputChange}
-          placeholder={interestRate.toString()}
+          value={interestRate.toString()}
         />
         {/* ADVANCED */}
         <Toggle onClick={this.handleToggleClick}>
@@ -177,31 +181,31 @@ export default class PropertyInfoForm extends React.Component<IProps, IState> {
               label="Annual Appreciation:"
               name="annualAppreciationRate"
               onChange={this.handleInputChange}
-              placeholder={annualAppreciationRate.toString()}
+              value={annualAppreciationRate.toString()}
             />
             <PercentageInput
               label="Management Percentage:"
               name="propertyManagementRate"
               onChange={this.handleInputChange}
-              placeholder={propertyManagementRate.toString()}
+              value={propertyManagementRate.toString()}
             />
             <PercentageInput
               label="Property Tax Rate:"
               name="propertyTaxRate"
               onChange={this.handleInputChange}
-              placeholder={propertyTaxRate.toString()}
+              value={propertyTaxRate.toString()}
             />
             <PercentageInput
               label="Maintenance/Repair Rate:"
               name="maintenanceRate"
               onChange={this.handleInputChange}
-              placeholder={maintenanceRate.toString()}
+              value={maintenanceRate.toString()}
             />
             <MonetaryInput
               label="Annual Insurance:"
               name="annualInsurance"
               onChange={this.handleInputChange}
-              placeholder={annualInsurance.toString()}
+              value={annualInsurance.toString()}
             />
           </ToggleContainer>
         )}

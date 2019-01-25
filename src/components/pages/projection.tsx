@@ -68,6 +68,7 @@ class ProjectionPage extends React.Component<{}, IState> {
                 isMobileScreen ? (
                   <MobilePropertyInfoForm
                     isOpen={this.state.isMobileFormOpen}
+                    values={this.state.formValues}
                     onSubmit={this.handlePropertyInfoSubmit}
                     onClose={this.handleMobileFormClose}
                     onOpen={this.handleMobileFormOpen}
