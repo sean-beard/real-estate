@@ -11,7 +11,7 @@ const PercentageInput: React.SFC<IInputProps> = ({
   <React.Fragment>
     <Label>{label}</Label>
     <div>
-      <Input type="number" placeholder={placeholder} {...rest} />
+      <Input type="number" step="0.01" placeholder={placeholder} {...rest} />
       <InlineText> %</InlineText>
     </div>
   </React.Fragment>

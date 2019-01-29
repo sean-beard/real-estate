@@ -12,7 +12,13 @@ const MonetaryInput: React.SFC<IInputProps> = ({
     <Label>{label}</Label>
     <div>
       <InlineText>$ </InlineText>
-      <Input type="number" min="0" placeholder={placeholder} {...rest} />
+      <Input
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder={placeholder}
+        {...rest}
+      />
     </div>
   </React.Fragment>
 );
