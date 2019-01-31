@@ -16,10 +16,14 @@ const Container = styled.div`
   grid-gap: 2em;
   grid-template-areas: "form results";
 
-  @media (max-width: 800px) {
+  @media (${Breakpoints.mobile}) {
+    grid-template-columns: 1fr;
     grid-template-areas:
       "form"
       "results";
+    input {
+      width: 90%;
+    }
   }
 `;
 
