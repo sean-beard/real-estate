@@ -9,7 +9,8 @@ import PropertyInfoForm, {
 
 const Icon = styled.img`
   cursor: pointer;
-  float: right;
+  float: ${({ isOpen }: { isOpen: IProps["isOpen"] }) =>
+    isOpen ? "right" : "left"};
 `;
 
 interface IProps extends IPropertyInfoFormProps {
@@ -26,11 +27,23 @@ const MobilePropertyInfoForm: React.SFC<IProps> = ({
 }) => {
   return isOpen ? (
     <React.Fragment>
-      <Icon src={closeIcon} alt="Close" width={32} onClick={onClose} />
+      <Icon
+        src={closeIcon}
+        alt="Close"
+        width={32}
+        onClick={onClose}
+        {...{ isOpen }}
+      />
       <PropertyInfoForm {...formProps} />
     </React.Fragment>
   ) : (
-    <Icon src={editIcon} alt="Edit" width={32} onClick={onOpen} />
+    <Icon
+      src={editIcon}
+      alt="Edit"
+      width={32}
+      onClick={onOpen}
+      {...{ isOpen }}
+    />
   );
 };
 
