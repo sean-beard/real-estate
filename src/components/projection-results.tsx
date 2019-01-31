@@ -1,23 +1,56 @@
 import * as React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-import { Label } from "components/typography";
+import { colors, Label } from "components/typography";
 import { IFormValues } from "types/form-values";
 import * as utils from "utils/projection";
 import { Input } from "./input";
 import Result, { ResultType } from "./result";
 
-const YearInputWrapper = styled.div`
+const YearWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 10rem;
+  width: 15rem;
   margin-bottom: 1rem;
+`;
+
+const YearInputWrapper = styled.div`
+  display: flex;
+  color: white;
+  cursor: pointer;
+  height: 1.3rem;
 `;
 
 const YearInput = styled(Input)`
   text-align: center;
-  width: 4rem;
+  width: 5rem;
+`;
+
+const yearModifierStyles = css`
+  font-size: small;
+  color: ${colors.buttonFont};
+  padding: 0.8em 0.7em 0 0.7em;
+  background-color: ${colors.button};
+  height: 100%;
+  min-width: 16px;
+  text-align: center;
+  cursor: pointer;
+
+  :hover {
+    background-color: ${colors.buttonHover};
+    left: 0.1em;
+  }
+`;
+
+const DecrementYear = styled.span`
+  ${yearModifierStyles}
+  border-radius: 4px 0 0 4px;
+`;
+
+const IncrementYear = styled.span`
+  ${yearModifierStyles}
+  border-radius: 0 4px 4px 0;
 `;
 
 interface IProps {
@@ -41,6 +74,16 @@ class ResultsForm extends React.Component<IProps, IState> {
     }
   };
 
+  public decrementYear = () => {
+    if (this.state.year > 0) {
+      this.setState({
+        year: this.state.year - 1
+      });
+    }
+  };
+
+  public incrementYear = () => this.setState({ year: this.state.year + 1 });
+
   public render() {
     const { formValues } = this.props;
     if (!formValues) {
@@ -51,14 +94,18 @@ class ResultsForm extends React.Component<IProps, IState> {
 
     return (
       <div>
-        <YearInputWrapper>
+        <YearWrapper>
           <Label>Years Held</Label>
-          <YearInput
-            type="number"
-            value={this.state.year}
-            onChange={this.handleYearChange}
-          />
-        </YearInputWrapper>
+          <YearInputWrapper>
+            <DecrementYear onClick={this.decrementYear}>-</DecrementYear>
+            <YearInput
+              type="number"
+              value={this.state.year}
+              onChange={this.handleYearChange}
+            />
+            <IncrementYear onClick={this.incrementYear}>+</IncrementYear>
+          </YearInputWrapper>
+        </YearWrapper>
 
         <Result
           label="Total ROI"
