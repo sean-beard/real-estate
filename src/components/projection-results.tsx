@@ -75,7 +75,7 @@ class ResultsForm extends React.Component<IProps, IState> {
   };
 
   public decrementYear = () => {
-    if (this.state.year > 0) {
+    if (this.state.year > 1) {
       this.setState({
         year: this.state.year - 1
       });
