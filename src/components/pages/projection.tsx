@@ -69,7 +69,7 @@ class ProjectionPage extends React.Component<{}, IState> {
           <InfoForm>
             <MediaQuery query={`(${Breakpoints.mobile})`}>
               {isMobileScreen =>
-                isMobileScreen ? (
+                isMobileScreen && this.state.formValues ? (
                   <MobilePropertyInfoForm
                     isOpen={this.state.isMobileFormOpen}
                     values={this.state.formValues}
