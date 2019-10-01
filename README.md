@@ -1,16 +1,20 @@
-# InvestmentDashboard
-
-## Introduction
+# Investment Dashboard
 
 This project was started as a practical tool for pre-investment analysis aimed at
 purchasing rental income properties.
 
+https://real-estate-projection.netlify.com/
+
 ## Setup
 
-Navigate to the `real-estate` directory and install required npm packages.
+Clone the repository locally. Navigate to the `real-estate` directory and install required npm packages.
 
 `yarn install`
 
 ## Development server
 
-Run `yarn start` for a dev server. Navigate to `http://localhost:3000/`. The app will automatically reload if you change any of the source files.
+Run the dev server. 
+
+`yarn start`
+
+Navigate to `http://localhost:3000/` in your web browser.
