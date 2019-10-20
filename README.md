@@ -1,7 +1,6 @@
 # Investment Dashboard
 
-This project was started as a practical tool for pre-investment analysis aimed at
-purchasing rental income properties.
+This project was started as a practical tool for pre-investment analysis aimed at purchasing rental income properties.
 
 https://real-estate-projection.netlify.com/
 
